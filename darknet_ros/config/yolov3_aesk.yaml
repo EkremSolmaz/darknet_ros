@@ -1,0 +1,27 @@
+yolo_model:
+  config_file:
+    name: yolov3.cfg
+  weight_file:
+    name: yolov3-aesk.weights
+  threshold:
+    value: 0.5
+  detection_classes:
+    names:
+      - girilmez
+      - kapali_yol
+      - left_duz
+      - right_duz
+      - left
+      - 20_limit_sonu
+      - 30_limit
+      - 20_limit
+      - right
+      - no_right
+      - no_left
+      - dur
+      - no_park
+      - park
+      - durak
+      - red_light
+      - yellow_light
+      - green_light
