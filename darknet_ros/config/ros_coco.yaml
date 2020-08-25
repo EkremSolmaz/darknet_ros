@@ -3,7 +3,16 @@ subscribers:
     topic: /camera/image
     queue_size: 1
 
+actions:
+  camera_reading:
+    name: /darknet_ros/coco/check_for_objects
+
 publishers:
+  object_detector:
+    topic: /darknet_ros/coco/found_object
+    queue_size: 1
+    latch: false
+
   bounding_boxes:
     topic: /darknet_ros/coco/bounding_boxes
     queue_size: 1
