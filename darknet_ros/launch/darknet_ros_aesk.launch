@@ -25,8 +25,6 @@
     <remap from="camera/rgb/image_raw"  to="$(arg image)" />
   </node>
 
-
-<sik>
   <!-- ***********************************DARKNET COCO*********************************** -->
   <!-- ROS and network parameter files -->
   <arg name="ros_param_file_coco"             default="$(find darknet_ros)/config/ros_coco.yaml"/>
@@ -42,5 +40,5 @@
     <param name="config_path"           value="$(arg yolo_config_path)" />
     <remap from="camera/rgb/image_raw"  to="$(arg image)" />
   </node>
-</sik>
+  
 </launch>
