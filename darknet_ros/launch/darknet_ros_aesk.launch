@@ -9,6 +9,7 @@
   <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
   <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/>
 
+
   <!-- ***********************************DARKNET AESK*********************************** -->
   <!-- ROS and network parameter files -->
   <arg name="ros_param_file_aesk"             default="$(find darknet_ros)/config/ros_aesk.yaml"/>
@@ -23,7 +24,6 @@
     <param name="config_path"           value="$(arg yolo_config_path)" />
     <remap from="camera/rgb/image_raw"  to="$(arg image)" />
   </node>
-
 
   <!-- ***********************************DARKNET COCO*********************************** -->
   <!-- ROS and network parameter files -->
@@ -40,5 +40,5 @@
     <param name="config_path"           value="$(arg yolo_config_path)" />
     <remap from="camera/rgb/image_raw"  to="$(arg image)" />
   </node>
-
+  
 </launch>
