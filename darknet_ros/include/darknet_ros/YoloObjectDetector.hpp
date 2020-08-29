@@ -37,6 +37,7 @@
 #include <darknet_ros_msgs/BoundingBoxes.h>
 #include <darknet_ros_msgs/CheckForObjectsAction.h>
 #include <darknet_ros_msgs/ObjectCount.h>
+#include <darknet_ros_msgs/BBandImage.h>
 
 // Darknet.
 #ifdef GPU
@@ -147,11 +148,13 @@ class YoloObjectDetector {
   image_transport::Subscriber imageSubscriber_;
   ros::Publisher objectPublisher_;
   ros::Publisher boundingBoxesPublisher_;
+  ros::Publisher bbAndImagePublisher_;
 
   //! Detected objects.
   std::vector<std::vector<RosBox_> > rosBoxes_;
   std::vector<int> rosBoxCounter_;
   darknet_ros_msgs::BoundingBoxes boundingBoxesResults_;
+  darknet_ros_msgs::BBandImage bbAndImageResults_;
 
   //! Camera related parameters.
   int frameWidth_;
@@ -159,6 +162,7 @@ class YoloObjectDetector {
 
   //! Publisher of the bounding box image.
   ros::Publisher detectionImagePublisher_;
+  ros::Publisher detectedCutPublisher;
 
   // Yolo running on thread.
   std::thread yoloThread_;

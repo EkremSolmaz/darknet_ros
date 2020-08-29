@@ -18,6 +18,7 @@ add_message_files(
     BoundingBox.msg
     BoundingBoxes.msg
     ObjectCount.msg
+    BBandImage.msg
 )
 
 add_action_files(

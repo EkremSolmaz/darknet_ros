@@ -146,7 +146,10 @@ void YoloObjectDetector::init() {
       nodeHandle_.advertise<darknet_ros_msgs::BoundingBoxes>(boundingBoxesTopicName, boundingBoxesQueueSize, boundingBoxesLatch);
   detectionImagePublisher_ =
       nodeHandle_.advertise<sensor_msgs::Image>(detectionImageTopicName, detectionImageQueueSize, detectionImageLatch);
-
+  detectedCutPublisher = nodeHandle_.advertise<sensor_msgs::Image>("detected_cut", 1);
+  
+  bbAndImagePublisher_ = nodeHandle_.advertise<darknet_ros_msgs::BBandImage>("detections", 1);
+  
   // Action servers.
   std::string checkForObjectsActionName;
   nodeHandle_.param("actions/camera_reading/topic", checkForObjectsActionName, std::string("check_for_objects"));
@@ -531,6 +534,7 @@ bool YoloObjectDetector::isNodeRunning(void) {
 void* YoloObjectDetector::publishInThread() {
   // Publish image.
   cv::Mat cvImage = cv::cvarrToMat(ipl_);
+  // USE camImageCopy_ for cut
   if (!publishDetectionImage(cv::Mat(cvImage))) {
     ROS_DEBUG("Detection image has not been broadcasted.");
   }
@@ -571,6 +575,12 @@ void* YoloObjectDetector::publishInThread() {
           boundingBox.xmax = xmax;
           boundingBox.ymax = ymax;
           boundingBoxesResults_.bounding_boxes.push_back(boundingBox);
+
+          cv::Rect roi(xmin, ymin, xmax-xmin, ymax-ymin);
+          cv::Mat detectedImg = camImageCopy_(roi);
+          sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", detectedImg).toImageMsg();
+          bbAndImageResults_.images.push_back(*msg);
+          bbAndImageResults_.bounding_boxes.push_back(boundingBox);
         }
       }
     }
@@ -578,6 +588,11 @@ void* YoloObjectDetector::publishInThread() {
     boundingBoxesResults_.header.frame_id = "detection";
     boundingBoxesResults_.image_header = headerBuff_[(buffIndex_ + 1) % 3];
     boundingBoxesPublisher_.publish(boundingBoxesResults_);
+
+    bbAndImageResults_.header.stamp = ros::Time::now();
+    bbAndImageResults_.header.frame_id = "detected";
+    bbAndImagePublisher_.publish(bbAndImageResults_);
+
   } else {
     darknet_ros_msgs::ObjectCount msg;
     msg.header.stamp = ros::Time::now();
@@ -593,6 +608,9 @@ void* YoloObjectDetector::publishInThread() {
     checkForObjectsActionServer_->setSucceeded(objectsActionResult, "Send bounding boxes.");
   }
   boundingBoxesResults_.bounding_boxes.clear();
+  bbAndImageResults_.bounding_boxes.clear();
+  bbAndImageResults_.images.clear();
+
   for (int i = 0; i < numClasses_; i++) {
     rosBoxes_[i].clear();
     rosBoxCounter_[i] = 0;

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+  <!-- Console launch prefix -->
+  <arg name="launch_prefix" default=""/>
+  <arg name="image" default="/camera/image" />
+
+  <!-- Config and weights folder. -->
+  <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
+  <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/>
+
+  <!-- ***********************************DARKNET AESK*********************************** -->
+  <!-- ROS and network parameter files -->
+  <arg name="ros_param_file_aesk"             default="$(find darknet_ros)/config/ros_aesk.yaml"/>
+  <arg name="network_param_file_aesk"         default="$(find darknet_ros)/config/yolov3_aesk.yaml"/>
+
+  <!-- Load parameters -->
+  <rosparam command="load" ns="darknet_ros_aesk" file="$(arg ros_param_file_aesk)"/>
+  <rosparam command="load" ns="darknet_ros_aesk" file="$(arg network_param_file_aesk)"/>
+
+  <node pkg="darknet_ros" type="darknet_ros" name="darknet_ros_aesk" output="screen" launch-prefix="$(arg launch_prefix)">
+    <param name="weights_path"          value="$(arg yolo_weights_path)" />
+    <param name="config_path"           value="$(arg yolo_config_path)" />
+    <remap from="camera/rgb/image_raw"  to="$(arg image)" />
+  </node>
+
+</launch>

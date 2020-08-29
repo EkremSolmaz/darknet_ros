@@ -41,6 +41,7 @@ std::string darknetFilePath_ = DARKNET_FILE_PATH;
 #endif
 
 darknet_ros_msgs::BoundingBoxes boundingBoxesResults_;
+darknet_ros_msgs::BBandImage bbAndImageResults_;
 
 /*!
  * Done-callback for CheckForObjects action client.
